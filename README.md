@@ -90,17 +90,26 @@ duckdb.sql("""
 Projects and papers built on OpenCS2:
 
 - **Multics: Generative Multi-Player World Model with Hierarchical Communication**
-  (Huang et al., HKU & Tencent ARC Lab, 2026): a multi-player video world model trained on
-  OpenCS2 that generates consistent views for each player, trains on 4 players and runs on 6 to 10
-  without retraining.
+  (Huang et al., HKU & Tencent ARC Lab, 2026): players share information through a hierarchy
+  (player → group → global) instead of all-to-all attention, which costs quadratically in the
+  number of players, or a single shared state, where unrelated events interfere with each other.
+  Players are grouped dynamically by their recent camera trajectories, and the group tokens share
+  parameters across groups. This improves cross-player consistency and per-player control. A model
+  trained with 4 players runs with 6, 8 or 10 without retraining, using 86% fewer self-attention
+  FLOPs than all-to-all attention at 10 players.
   [Paper](https://arxiv.org/abs/2610.17201) ·
   [Project page](https://karine-huang.github.io/Multics/) ·
   [Code](https://github.com/TencentARC/Multics) ·
   [Model](https://huggingface.co/TencentARC/Multics)
 - **WorldCast: Distributed Multiplayer World Models**
-  (Ye et al., CUHK-Shenzhen, SLAI, Didi Voyager Research et al., 2026): one world-model client
-  per player, sharing only player and scene state. Trained on four OpenCS2 maps and runs in real
-  time for 2 to 16 players.
+  (Ye et al., CUHK-Shenzhen, SLAI, Didi Voyager Research et al., 2026): instead of generating all
+  views in one model, each player runs its own client, made of a video generator and a state model
+  that estimates the player's position from the generated video and inputs. Clients exchange only
+  compact state. Other players' states are projected into a camera-aligned field that tells each
+  client where and how to draw them, which renders other players over 10× more reliably than joint
+  generation. A shared scene memory lets a client reuse what others have already generated, which
+  keeps places looking the same across views. Each client runs in real time, the system scales to
+  16 players, and image quality holds over hour-long rollouts.
   [Paper](https://arxiv.org/abs/2610.12412) ·
   [Project page](https://ziyang-ye.github.io/WorldCast-Page/)
 
