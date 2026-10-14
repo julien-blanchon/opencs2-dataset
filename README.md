@@ -97,6 +97,12 @@ Projects and papers built on OpenCS2:
   [Project page](https://karine-huang.github.io/Multics/) ·
   [Code](https://github.com/TencentARC/Multics) ·
   [Model](https://huggingface.co/TencentARC/Multics)
+- **WorldCast: Distributed Multiplayer World Models**
+  (Ye et al., CUHK-Shenzhen, SLAI, Didi Voyager Research et al., 2026): one world-model client
+  per player, sharing only player and scene state. Trained on four OpenCS2 maps and runs in real
+  time for 2 to 16 players.
+  [Paper](https://arxiv.org/abs/2610.12412) ·
+  [Project page](https://ziyang-ye.github.io/WorldCast-Page/)
 
 Using OpenCS2 in your work? Open an issue or a PR to add it here.
 
