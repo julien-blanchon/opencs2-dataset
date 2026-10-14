@@ -10,41 +10,90 @@
   <a href="https://huggingface.co/collections/blanchon/opencs2">Collection</a>
 </p>
 
-A rendered Counter-Strike 2 dataset built from professional HLTV demos: every round is replayed
-from all 10 player perspectives, with video, spatial audio, inputs and world state aligned on the
-same tick clock.
+A rendered dataset of professional Counter-Strike 2 matches. Every round is captured from all ten
+player POVs, frame-aligned, with spatialized audio, mouse/keyboard inputs and per-tick world state.
+It is built from HLTV demos, served as parquet shards, and browsable online without downloading
+the archive.
 
-**[Browse it in the viewer →](https://huggingface.co/spaces/blanchon/opencs2-dataset-viewer)**
-every match, map and round, with all 10 player POVs synced on one timeline, right in your browser.
+## Viewer
 
-## What's inside
+**[huggingface.co/spaces/blanchon/opencs2-dataset-viewer](https://huggingface.co/spaces/blanchon/opencs2-dataset-viewer)**
 
-Per player, per round:
+Browse every match, map and round, watch all 10 POVs synced on one timeline with the live minimap
+and input overlay, and filter the dataset with SQL (DuckDB), all in the browser.
 
-- **Video**: 1280×720 @ 32 fps, near-lossless H.264
-- **Audio**: per-player stereo, mixed from that player's position and orientation
-- **Inputs**: every tick: keys, mouse delta, view angles, fire/jump/use, weapon switches
-- **World state**: every tick: position, velocity, view, health, armor, weapon, alive flag
-- **Events**: kills, duels, clutches, round outcomes, match metadata
+<a href="assets/demo.mp4">
+  <img src="assets/demo.webp" alt="OpenCS2 viewer demo: 10 synced POVs, single-POV playback with minimap and input overlay" width="100%">
+</a>
 
-Current build: **165,270 POV rounds** (~2,974 hours of POV video) across 16,527 rounds and
-794 pro match/maps.
+<sub>▶ <a href="assets/demo.mp4">Full demo video</a> · <a href="https://x.com/JulienBlanchon/status/2054519347574350115">Announcement on X</a></sub>
+
+## At a glance
+
+| Matches | Maps rendered | Rounds | POV rounds | POV video |
+| ---: | ---: | ---: | ---: | ---: |
+| 359 | 794 | 16,527 | 165,270 | ~2,974 h |
+
+The rounds total about 528 hours of game time. Each round is seen from up to 10 POVs, and a
+recording stops when that player dies.
+
+## What's recorded
+
+- **Video**: 1280×720 @ 32 fps, near-lossless H.264, one stream per player POV
+- **Audio**: per-player stereo, mixed from each player's position and orientation
+- **Inputs**: per-tick keystrokes, mouse delta, view angles, fire/jump/use, weapon switches
+- **World state**: per-tick positions, velocities, camera intrinsics, health, armor, ammo and
+  weapons for all 10 players
+- **Events**: kills, duels, clutches, round outcomes and HLTV match metadata
+- **G-buffers** *(soon)*: luminance, depth and vertex IDs
+
+Every signal is sampled on the same CS2 tick clock, so there is no drift and nothing to resample.
+
+## What it's for
+
+- **Behaviour cloning / VLA**: `(frame, audio) → action` policies trained on expert play
+- **Inverse dynamics models**: recover actions from raw video for VPT-style pre-training
+- **World models**: `(frame, action) → next frame`, with 10 POVs of the same world state
+- **Spatial-audio conditioning**: localize footsteps and gunfire from per-player stereo
+- **Multi-agent training**: all 10 perspectives stay tick-aligned for cooperative or competitive
+  policies
+- **Multi-view SfM / MVS**: camera intrinsics and poses from 10 synced viewpoints
 
 ## Datasets
 
 | Repo | Description |
 | --- | --- |
-| [`blanchon/opencs2_dataset`](https://huggingface.co/datasets/blanchon/opencs2_dataset) | POV renders, loose-file layout with parquet indexes and event tables |
-| [`blanchon/opencs2_dataset_wds`](https://huggingface.co/datasets/blanchon/opencs2_dataset_wds) | Same data packaged as WebDataset tar shards for large-scale training |
+| [`blanchon/opencs2_dataset`](https://huggingface.co/datasets/blanchon/opencs2_dataset) | POV renders: one folder per POV round with `video.mp4` and `ticks.parquet`, plus parquet indexes and event tables |
+| [`blanchon/opencs2_dataset_wds`](https://huggingface.co/datasets/blanchon/opencs2_dataset_wds) | The same data as WebDataset tar shards with byte-offset indexes for large-scale training |
 | [`blanchon/opencs2_dataset_demo`](https://huggingface.co/datasets/blanchon/opencs2_dataset_demo) | Source HLTV `.dem` files with per-map metadata and analysis |
-| [`opencs2-dataset-viewer`](https://huggingface.co/spaces/blanchon/opencs2-dataset-viewer) | Browser-based viewer for the whole dataset |
+| [`opencs2-dataset-viewer`](https://huggingface.co/spaces/blanchon/opencs2-dataset-viewer) | The browser viewer for the whole dataset |
 
-Usage examples, schemas and loading code live in each dataset card on Hugging Face.
+Each dataset card has the schemas and loading examples (`datasets`, DuckDB, WebDataset).
+
+## Quick start
+
+Filter with SQL without downloading any video:
+
+```python
+import duckdb
+
+duckdb.sql("""
+    SELECT match_id, map_name, round, attacker_player_slot, event_seconds, distance
+    FROM 'hf://datasets/blanchon/opencs2_dataset/events/kills.parquet'
+    WHERE weapon = 'awp' AND noscope AND through_smoke
+    LIMIT 10
+""").show()
+```
 
 ## Source code
 
-The generation and rendering pipeline is not published. This repository only serves as a home
-page for the project.
+The generation and rendering pipeline is not public. This repository is the project's home page.
+
+## Acknowledgments
+
+Thanks to the SentientX team for their review and feedback on this dataset, to Hugging Face for the
+grant covering dataset hosting, and to RunPod (via [@NERDDISCO](https://x.com/NERDDISCO)) for the
+$2,500 compute grant ❤️
 
 ## Citation
 
@@ -64,3 +113,7 @@ Dataset: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
 
 Counter-Strike 2 is a trademark of Valve Corporation. This project is not affiliated with or
 endorsed by Valve.
+
+<p align="center">
+  <a href="https://guybrush.ink/">Julien Blanchon</a> · <a href="https://x.com/JulienBlanchon">@JulienBlanchon</a>
+</p>
