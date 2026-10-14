@@ -111,7 +111,9 @@ Projects and papers built on OpenCS2:
   keeps places looking the same across views. Each client runs in real time, the system scales to
   16 players, and image quality holds over hour-long rollouts.
   [Paper](https://arxiv.org/abs/2610.12412) ·
-  [Project page](https://ziyang-ye.github.io/WorldCast-Page/)
+  [Project page](https://ziyang-ye.github.io/WorldCast-Page/) ·
+  [Code](https://github.com/Ziyang-Ye/WorldCast) ·
+  [Model](https://huggingface.co/ZiyangYe/WorldCast)
 
 Using OpenCS2 in your work? Open an issue or a PR to add it here.
 
