@@ -85,6 +85,21 @@ duckdb.sql("""
 """).show()
 ```
 
+## Used by
+
+Projects and papers built on OpenCS2:
+
+- **Multics: Generative Multi-Player World Model with Hierarchical Communication**
+  (Huang et al., HKU & Tencent ARC Lab, 2026): a multi-player video world model trained on
+  OpenCS2 that generates consistent views for each player, trains on 4 players and runs on 6 to 10
+  without retraining.
+  [Paper](https://arxiv.org/abs/2610.17201) ·
+  [Project page](https://karine-huang.github.io/Multics/) ·
+  [Code](https://github.com/TencentARC/Multics) ·
+  [Model](https://huggingface.co/TencentARC/Multics)
+
+Using OpenCS2 in your work? Open an issue or a PR to add it here.
+
 ## Source code
 
 The generation and rendering pipeline is not public. This repository is the project's home page.
