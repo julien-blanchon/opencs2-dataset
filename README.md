@@ -107,6 +107,14 @@ Projects and papers built on OpenCS2:
   [Project page](https://ziyang-ye.github.io/WorldCast-Page/) ·
   [Code](https://github.com/Ziyang-Ye/WorldCast) ·
   [Model](https://huggingface.co/ZiyangYe/WorldCast)
+- **CADRE: Rethinking Video Autoencoders for Interactive World Models**
+  (Rahary et al., 2026): an open family of causal diffusion autoencoders at several
+  spatio-temporal compressions, sharing a diffusion decoder distilled to one or a few steps.
+  Training the same world model on each one maps the latency-quality frontier, and shows that
+  manipulation and navigation need opposite compressions. OpenCS2 is part of the autoencoder
+  training mix.
+  [Paper](https://arxiv.org/abs/2610.30129) ·
+  [Project page](https://kyutai.org/blog/2026-10-21-cadre)
 
 Using OpenCS2 in your work? Open an issue or a PR to add it here.
 
